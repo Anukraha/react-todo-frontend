@@ -8,6 +8,7 @@ import {
 import { Link } from "react-router-dom";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
+import DepartmentDropdown from "./DepartmentDropdown";
 
 const EmployeesList = () => {
   const [currentEmployee, setCurrentEmployee] = useState(null);
@@ -78,7 +79,10 @@ const EmployeesList = () => {
           </div>
         </div>
       </div>
+      <div><DepartmentDropdown/></div>
+
       <div className="col-md-6">
+
         <h4>Employees List</h4>
 
         <ul className="list-group">
@@ -104,6 +108,7 @@ const EmployeesList = () => {
           Remove All
         </Button>
       </div>
+      
       <div className="col-md-6">
         {currentEmployee ? (
           <div>

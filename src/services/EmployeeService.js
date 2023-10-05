@@ -27,7 +27,9 @@ const removeAll = () => {
 const findByName = emp_name => {
   return http.get(`/employees?emp_name=${emp_name}`);
 };
-
+const getDepartmentNameById = dept_id => {
+  return http.get(`/departments/${dept_id}`);
+};
 const EmployeeService = {
   getAll,
   get,
@@ -35,7 +37,8 @@ const EmployeeService = {
   update,
   remove,
   removeAll,
-  findByName
+  findByName,
+  getDepartmentNameById
 };
 
 export default EmployeeService;
