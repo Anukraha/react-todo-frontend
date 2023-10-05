@@ -6,6 +6,8 @@ import {
   deleteAllEmployees,
 } from "../slices/employees";
 import { Link } from "react-router-dom";
+import TextField from "@mui/material/TextField";
+import Button from "@mui/material/Button";
 
 const EmployeesList = () => {
   const [currentEmployee, setCurrentEmployee] = useState(null);
@@ -57,21 +59,22 @@ const EmployeesList = () => {
     <div className="list row">
       <div className="col-md-8">
         <div className="input-group mb-3">
-          <input
-            type="text"
-            className="form-control"
-            placeholder="Search by emp_name"
+          <TextField
+            label="Search by emp_name"
+            variant="outlined"
             value={searchName}
             onChange={onChangeSearchName}
+            fullWidth
           />
           <div className="input-group-append">
-            <button
-              className="btn btn-outline-secondary"
-              type="button"
+            <Button
+              variant="outlined"
+              color="primary"
               onClick={findByName}
+              style={{ marginLeft: "10px" }}
             >
               Search
-            </button>
+            </Button>
           </div>
         </div>
       </div>
@@ -92,13 +95,14 @@ const EmployeesList = () => {
               </li>
             ))}
         </ul>
-
-        <button
-          className="m-3 btn btn-sm btn-danger"
+        <Button
+          variant="outlined"
+          color="secondary"
+          style={{ marginTop: "20px" }}
           onClick={removeAllEmployees}
         >
           Remove All
-        </button>
+        </Button>
       </div>
       <div className="col-md-6">
         {currentEmployee ? (
