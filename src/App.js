@@ -2,7 +2,7 @@ import React from "react";
 import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./App.css";
-
+import Todo from "./components/Todo";
 import AddEmployee from "./components/AddEmployee";
 import Employee from "./components/Employee";
 import EmployeesList from "./components/EmployeesList";
@@ -34,6 +34,8 @@ function App() {
           <Route path="/employees" element={<EmployeesList/>} />
           <Route path="/add" element={<AddEmployee/>} />
           <Route path="/employees/:id" element={<Employee/>} />
+          <Route path="/employees/:id/todos" component={<Todo/>} />
+
         </Routes>
       </div>
     </Router>

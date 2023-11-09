@@ -1,6 +1,7 @@
+/* eslint-disable no-unused-vars */
 import React, { useState, useEffect, useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
-
+import axios from 'axios';
 import {
   retrieveEmployees,
   findEmployeesByName,
@@ -85,7 +86,37 @@ const EmployeesList = () => {
     });
   };
   
+  const [todos, setTodos] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  const [employeeTodos, setEmployeeTodos] = useState([]);
+
+  useEffect(() => {
+    // Function to fetch todos data for the current employee
+    const fetchTodos = async () => {
+      try {
+        setLoading(true);
+        const response = await axios.get(`http://localhost:3000/api/employees/${currentEmployee.id}/todos`);
+        setTodos(response.data);
+        setLoading(false);
+        setError(null);
+      } catch (error) {
+        console.error('Error fetching todos:', error);
+        setError(error.message || 'Error fetching todos');
+        setLoading(false);
+        setTodos([]); // Clear todos in case of an error
+      }
+    };
   
+    // Fetch todos for the current employee when currentEmployee changes
+    if (currentEmployee) {
+      fetchTodos();
+    } else {
+      // Clear todos if no current employee is selected
+      setTodos([]);
+    }
+  }, [currentEmployee]);
 
   return (
     <div className="list row">
@@ -170,6 +201,7 @@ const EmployeesList = () => {
           id="panel1a-header"
         >
           <Typography>To-do</Typography>
+          
         </AccordionSummary>
         <AccordionDetails>
         <ul className="list-group">
@@ -215,11 +247,25 @@ const EmployeesList = () => {
   }}
 >
   {item}
+ 
 </li>
 
         ))}
+        
 </ul>
-
+<div>
+{loading && <p>Loading...</p>}
+    {error && <p>Error: {error}</p>}
+    {!loading && !error && todos.length > 0 && currentEmployee && (
+      <p>
+        {todos
+          .filter(todo => todo.employeeId === currentEmployee.id)
+          .map(todo => todo.description)
+          .join(", ")}
+      </p>
+    )}
+    {!loading && !error && todos.length === 0 && <p>No todos available.</p>}
+  </div>
   </AccordionDetails>
       </Accordion>
             </div>
