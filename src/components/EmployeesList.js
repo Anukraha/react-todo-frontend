@@ -70,7 +70,7 @@ const EmployeesList = () => {
   const [selectedItems, setSelectedItems] = useState({});
 
   const handleItemClick = (employeeId, index) => {
-    console.log("Item clicked:", employeeId, index); // Add this line for debugging
+    console.log("Item clicked:", employeeId, index); 
     setSelectedItems(prevState => { const updatedItems = Array.isArray(prevState[employeeId])
         ? [...prevState[employeeId]]
         : [];
@@ -89,8 +89,7 @@ const EmployeesList = () => {
   const [todos, setTodos] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-
-  const [employeeTodos, setEmployeeTodos] = useState([]);
+  const [department, setDepartment] = useState(null);
 
   useEffect(() => {
     // Function to fetch todos data for the current employee
@@ -108,13 +107,30 @@ const EmployeesList = () => {
         setTodos([]); // Clear todos in case of an error
       }
     };
+
+    const fetchDepartment = async () => {
+      try {
+        setLoading(true);
+        const response = await axios.get(`http://localhost:3000/api/employees/${currentEmployee.id}/dept`);
+        setDepartment(response.data);
+        setLoading(false);
+        setError(null);
+      } catch (error) {
+        console.error('Error fetching department:', error);
+        setError(error.message || 'Error fetching department');
+        setLoading(false);
+        setDepartment(null); // Clear department in case of an error
+      }
+    };
   
     // Fetch todos for the current employee when currentEmployee changes
     if (currentEmployee) {
       fetchTodos();
+      fetchDepartment();
     } else {
       // Clear todos if no current employee is selected
       setTodos([]);
+      setDepartment(null);
     }
   }, [currentEmployee]);
 
@@ -192,6 +208,18 @@ const EmployeesList = () => {
                 <strong>Address</strong>
               </label>{" "}
               {currentEmployee.address}
+            </div>
+            <div>
+              <label>
+                <strong>Department</strong>
+              </label>{" "}
+              <p>
+        {department
+          .filter(department=> department.id === currentEmployee.departmentId)
+          .map(department => department.department)
+          .join(", ")}
+      </p>
+          
             </div>
             <div>
             <Accordion>

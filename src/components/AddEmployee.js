@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import { createEmployee } from "../slices/employees";
+import DepartmentDropdown from "./DepartmentDropdown";
+
 
 const AddEmployee = () => {
   const initialEmployeeState = {
@@ -9,6 +11,7 @@ const AddEmployee = () => {
     mobile: "",
     address: "",
     todo_description:[],
+    departmentId: 1001,
   };
   const [employee, setEmployee] = useState(initialEmployeeState);
   const [submitted, setSubmitted] = useState(false);
@@ -20,16 +23,18 @@ const AddEmployee = () => {
     setEmployee({ ...employee, [name]: value });
   };
 
-  
+  const handleDepartmentChange = (event) => {
+    setEmployee({ ...employee, departmentId: event.target.value });
+  };
 
   const saveEmployee = () => {
-    const { emp_name, mobile, address,todo_description } = employee;
+    const { emp_name, mobile, address,todo_description,departmentId } = employee;
 
     const parsedTodoDescription = JSON.stringify(todo_description);
 
 
 
-    dispatch(createEmployee({ emp_name, mobile, address,todo_description:parsedTodoDescription }))
+    dispatch(createEmployee({ emp_name, mobile, address,todo_description:parsedTodoDescription, departmentId }))
       .unwrap()
       .then(data => {
         console.log(data);
@@ -38,7 +43,8 @@ const AddEmployee = () => {
           emp_name: data.emp_name,
           mobile: data.mobile,
           address: data.address,
-          todo_description: data.todo_description
+          todo_description: data.todo_description,
+          departmentId: data.departmentId
         });
         setSubmitted(true);
       })
@@ -113,7 +119,11 @@ const AddEmployee = () => {
               name="todo_description"
             />
           </div>
-
+<div className="form-group">
+  <DepartmentDropdown   
+              selectedDepartment={employee.departmentId}
+              onChange={handleDepartmentChange}/>
+  </div>
           <button onClick={saveEmployee} className="btn btn-success">
             Submit
           </button>

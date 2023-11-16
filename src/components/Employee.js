@@ -3,6 +3,7 @@ import { useDispatch } from "react-redux";
 import { useParams, useNavigate } from 'react-router-dom';
 import { updateEmployee, deleteEmployee } from "../slices/employees";
 import EmployeeDataService from "../services/EmployeeService";
+import DepartmentDropdown from "./DepartmentDropdown";
 
 const Employee = (props) => {
   const { id }= useParams();
@@ -14,6 +15,7 @@ const Employee = (props) => {
     mobile: "",
     address: "",
     todo_description:[],
+    departmentId: 1001, 
   };
   const [currentEmployee, setCurrentEmployee] = useState(initialEmployeeState);
   const [message, setMessage] = useState("");
@@ -115,6 +117,11 @@ const Employee = (props) => {
               name="todo_description"
             />
           </div>
+          <div className="form-group">
+  <DepartmentDropdown   
+              selectedDepartment={currentEmployee.departmentId}
+              onChange={handleInputChange}/>
+  </div>
             
           </form>
 
