@@ -23,8 +23,16 @@ const EmployeesList = () => {
   const [currentIndex, setCurrentIndex] = useState(-1);
   const [searchName, setSearchName] = useState("");
  
-
-
+  let strikethroughCount = 0;
+  let nonStrikethroughCount = 0;
+  const updateCounters = (isStrikethrough) => {
+    if (isStrikethrough) {
+      strikethroughCount++;
+    } else {
+      nonStrikethroughCount++;
+    }
+  };
+  
   const employees = useSelector(state => state.employees);
   const dispatch = useDispatch();
 
@@ -71,6 +79,24 @@ const EmployeesList = () => {
 
   const handleItemClick = (employeeId, index) => {
     console.log("Item clicked:", employeeId, index); 
+    (async () => {
+    try {
+     
+      const response = await axios.put(`http://localhost:3000/api/employees/${currentEmployee.id}/todos/strikethrough`, {
+        strikethroughCount: strikethroughCount, 
+      });
+
+     
+      console.log('Update Strikethrough Count Response:', response.data.strikethroughCount);
+
+   
+      initFetch();
+    } catch (error) {
+      console.error('Error updating strikethrough count:', error);
+   
+    }
+  })();
+  
     setSelectedItems(prevState => { const updatedItems = Array.isArray(prevState[employeeId])
         ? [...prevState[employeeId]]
         : [];
@@ -133,6 +159,8 @@ const EmployeesList = () => {
       setDepartment(null);
     }
   }, [currentEmployee]);
+  
+ 
 
   return (
     <div className="list row">
@@ -209,18 +237,7 @@ const EmployeesList = () => {
               </label>{" "}
               {currentEmployee.address}
             </div>
-            <div>
-              <label>
-                <strong>Department</strong>
-              </label>{" "}
-              <p>
-        {department
-          .filter(department=> department.id === currentEmployee.departmentId)
-          .map(department => department.department)
-          .join(", ")}
-      </p>
-          
-            </div>
+           
             <div>
             <Accordion>
         <AccordionSummary
@@ -229,59 +246,9 @@ const EmployeesList = () => {
           id="panel1a-header"
         >
           <Typography>To-do</Typography>
-          
+         
         </AccordionSummary>
-        <AccordionDetails>
-        <ul className="list-group">
-        {Array.isArray(currentEmployee.todo_description)
-  ? currentEmployee.todo_description.map((item, index) => (
-      <li
-        key={index}
-        onClick={() => handleItemClick(currentEmployee.id, index)}
-        className={`list-group-item ${
-          (selectedItems[currentEmployee.id] || []).includes(index)
-            ? "active"
-            : ""
-        }`}
-        style={{
-          cursor: "pointer",
-          textDecoration: (selectedItems[currentEmployee.id] || []).includes(index)
-            ? "line-through"
-            : "none",
-        }}
-      >
-        {item}
-      </li>
-    ))
-  : currentEmployee.todo_description
-        .replace(/"/g, "") // Remove double quotes
-        .split(",")
-        .map((item, index) => item.trim())
-        .filter((item) => item !== "") // Remove empty strings
-        .map((item, index) => (
-          <li
-  key={index}
-  onClick={() => handleItemClick(currentEmployee.id, index)}
-  className={`list-group-item ${
-    (selectedItems[currentEmployee.id] || []).includes(index)
-      ? "active"
-      : ""
-  }`}
-  style={{
-    cursor: "pointer",
-    textDecoration: (selectedItems[currentEmployee.id] || []).includes(index)
-      ? "line-through"
-      : "none",
-  }}
->
-  {item}
- 
-</li>
-
-        ))}
-        
-</ul>
-<div>
+        <div>
 {loading && <p>Loading...</p>}
     {error && <p>Error: {error}</p>}
     {!loading && !error && todos.length > 0 && currentEmployee && (
@@ -294,7 +261,78 @@ const EmployeesList = () => {
     )}
     {!loading && !error && todos.length === 0 && <p>No todos available.</p>}
   </div>
+        <AccordionDetails>
+  <ul className="list-group">
+    {Array.isArray(currentEmployee.todo_description)
+      ? currentEmployee.todo_description.map((item, index) => {
+          const isStrikethrough = (selectedItems[currentEmployee.id] || []).includes(index);
+          updateCounters(isStrikethrough);
+
+          return (
+            <li
+              key={index}
+              onClick={() => handleItemClick(currentEmployee.id, index)}
+              className={`list-group-item ${isStrikethrough ? "active" : ""}`}
+              style={{
+                cursor: "pointer",
+                textDecoration: isStrikethrough ? "line-through" : "none",
+              }}
+            >
+              {item}
+            </li>
+          );
+        })
+      : currentEmployee.todo_description
+          .replace(/"/g, "")
+          .split(",")
+          .map((item, index) => item.trim())
+          .filter((item) => item !== "")
+          .map((item, index) => {
+            const isStrikethrough = (selectedItems[currentEmployee.id] || []).includes(index);
+            updateCounters(isStrikethrough);
+
+            return (
+              <li
+                key={index}
+                onClick={() => handleItemClick(currentEmployee.id, index)}
+                className={`list-group-item ${isStrikethrough ? "active" : ""}`}
+                style={{
+                  cursor: "pointer",
+                  textDecoration: isStrikethrough ? "line-through" : "none",
+                }}
+              >
+                {item}
+              </li>
+            );
+          })}
+  </ul>
+
+  <div>
+    {/* <p>No. of tasks done: {strikethroughCount} / {strikethroughCount + nonStrikethroughCount}</p> */}
+    {/* <p>Total No. of tasks: {strikethroughCount + nonStrikethroughCount}</p> */}
+  </div>
+
+
+
   </AccordionDetails>
+  </Accordion>
+  <Accordion>
+  <AccordionSummary
+          expandIcon={<ExpandMoreIcon />}
+          aria-controls="panel1a-content"
+          id="panel1a-header"
+        >
+          <Typography>Employee Details</Typography>
+         
+        </AccordionSummary>
+  <AccordionDetails>
+          <li>Name: {currentEmployee.emp_name}</li>
+          <li>Department: {department
+          .filter(department=> department.id === currentEmployee.departmentId)
+          .map(department => department.department)
+          .join(", ")}</li>
+          <li>No. of tasks: {strikethroughCount} / {strikethroughCount + nonStrikethroughCount}</li>
+          </AccordionDetails>
       </Accordion>
             </div>
 
