@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import { createEmployee } from "../slices/employees";
 import DepartmentDropdown from "./DepartmentDropdown";
+import TaskList from "./TaskList";
 
 
 const AddEmployee = () => {
@@ -15,7 +16,7 @@ const AddEmployee = () => {
   };
   const [employee, setEmployee] = useState(initialEmployeeState);
   const [submitted, setSubmitted] = useState(false);
-
+  
   const dispatch = useDispatch();
 
   const handleInputChange = event => {
@@ -108,16 +109,8 @@ const AddEmployee = () => {
             />
           </div>
           <div className="form-group">
-            <label htmlFor="todo_description">Todo</label>
-            <input
-              type="text"
-              className="form-control"
-              id="todo_description"
-              required
-              value={employee.todo_description || ''}
-              onChange={handleInputChange}
-              name="todo_description"
-            />
+            <label htmlFor="todo_description">Task</label>
+            <TaskList />
           </div>
 <div className="form-group">
   <DepartmentDropdown   

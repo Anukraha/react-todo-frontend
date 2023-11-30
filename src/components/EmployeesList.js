@@ -15,7 +15,7 @@ import AccordionSummary from '@mui/material/AccordionSummary';
 import AccordionDetails from '@mui/material/AccordionDetails';
 import Typography from '@mui/material/Typography';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-
+import EmployeeTable from './EmployeeTable';
 
 
 const EmployeesList = () => {
@@ -145,16 +145,14 @@ const EmployeesList = () => {
         console.error('Error fetching department:', error);
         setError(error.message || 'Error fetching department');
         setLoading(false);
-        setDepartment(null); // Clear department in case of an error
+        setDepartment(null); 
       }
     };
   
-    // Fetch todos for the current employee when currentEmployee changes
     if (currentEmployee) {
       fetchTodos();
       fetchDepartment();
     } else {
-      // Clear todos if no current employee is selected
       setTodos([]);
       setDepartment(null);
     }
@@ -218,28 +216,19 @@ const EmployeesList = () => {
       <div className="col-md-6">
         {currentEmployee ? (
           <div>
-            <h4>Employee</h4>
+
             <div>
-              <label>
-                <strong>Name:</strong>
-              </label>{" "}
-              {currentEmployee.emp_name}
-            </div>
-            <div>
-              <label>
-                <strong>Mobile:</strong>
-              </label>{" "}
-              {currentEmployee.mobile}
-            </div>
-            <div>
-              <label>
-                <strong>Address</strong>
-              </label>{" "}
-              {currentEmployee.address}
-            </div>
-           
-            <div>
-            <Accordion>
+            <div className="col-md-6">
+      {currentEmployee ? (
+        <div>
+          <h4>Employee</h4>
+          <EmployeeTable data={[currentEmployee]} />
+        </div>
+      ) : (
+        <p>No employee selected</p>
+      )}
+    </div>
+          {/*  <Accordion>
         <AccordionSummary
           expandIcon={<ExpandMoreIcon />}
           aria-controls="panel1a-content"
@@ -248,19 +237,7 @@ const EmployeesList = () => {
           <Typography>To-do</Typography>
          
         </AccordionSummary>
-        <div>
-{loading && <p>Loading...</p>}
-    {error && <p>Error: {error}</p>}
-    {!loading && !error && todos.length > 0 && currentEmployee && (
-      <p>
-        {todos
-          .filter(todo => todo.employeeId === currentEmployee.id)
-          .map(todo => todo.description)
-          .join(", ")}
-      </p>
-    )}
-    {!loading && !error && todos.length === 0 && <p>No todos available.</p>}
-  </div>
+      
         <AccordionDetails>
   <ul className="list-group">
     {Array.isArray(currentEmployee.todo_description)
@@ -309,14 +286,14 @@ const EmployeesList = () => {
 
   <div>
     {/* <p>No. of tasks done: {strikethroughCount} / {strikethroughCount + nonStrikethroughCount}</p> */}
-    {/* <p>Total No. of tasks: {strikethroughCount + nonStrikethroughCount}</p> */}
+    {/* <p>Total No. of tasks: {strikethroughCount + nonStrikethroughCount}</p> 
   </div>
 
 
 
   </AccordionDetails>
   </Accordion>
-  <Accordion>
+   <Accordion>
   <AccordionSummary
           expandIcon={<ExpandMoreIcon />}
           aria-controls="panel1a-content"
@@ -325,15 +302,15 @@ const EmployeesList = () => {
           <Typography>Employee Details</Typography>
          
         </AccordionSummary>
-  <AccordionDetails>
-          <li>Name: {currentEmployee.emp_name}</li>
+ <AccordionDetails>
+           <li>Name: {currentEmployee.emp_name}</li>
           <li>Department: {department
           .filter(department=> department.id === currentEmployee.departmentId)
           .map(department => department.department)
-          .join(", ")}</li>
+          .join(", ")}</li> 
           <li>No. of tasks: {strikethroughCount} / {strikethroughCount + nonStrikethroughCount}</li>
           </AccordionDetails>
-      </Accordion>
+      </Accordion>*/}
             </div>
 
             <Link
