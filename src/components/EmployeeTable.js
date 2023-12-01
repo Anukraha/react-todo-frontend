@@ -6,30 +6,37 @@ const EmployeeTable = ({ data }) => {
     () => [
       {
         Header: 'Name',
-        accessor: 'emp_name', // corresponds to currentEmployee.emp_name
+        accessor: 'emp_name',
       },
       {
         Header: 'Mobile',
-        accessor: 'mobile', // corresponds to currentEmployee.mobile
+        accessor: 'mobile',
       },
       {
         Header: 'Address',
-        accessor: 'address', // corresponds to currentEmployee.address
+        accessor: 'address',
+      },
+      {
+        Header: 'Completed Tasks',
+        accessor: 'task_no',
       },
       {
         Header: 'Status',
-        accessor: 'status', // corresponds to currentEmployee.status
-        Cell: ({ value }) => (value ? value : 'Ongoing'), // Display 'Ongoing' if value is falsy
+        accessor: 'status',
+        Cell: ({ value, row }) => (row.values.task_no >= 3 ? 'Completed' : 'Ongoing'),
       },
       {
         Header: 'Department',
-        accessor: 'department.department', // assumes the 'data' array contains 'department' property
+        accessor: 'department.department',
       },
     ],
     []
   );
-
-  const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } = useTable({ columns, data });
+  
+  const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } = useTable({
+    columns,
+    data,
+  });
 
   return (
     <div className="table-container">
@@ -54,7 +61,7 @@ const EmployeeTable = ({ data }) => {
                     style={{
                       whiteSpace: 'nowrap',
                       overflow: 'hidden',
-                      textOverflow: 'ellipsis', // Optionally adds an ellipsis (...) when the content overflows
+                      textOverflow: 'ellipsis',
                     }}
                   >
                     {cell.render('Cell')}

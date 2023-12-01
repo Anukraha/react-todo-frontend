@@ -105,18 +105,7 @@ const Employee = (props) => {
                 onChange={handleInputChange}
               />
             </div>
-            <div className="form-group">
-            <label htmlFor="todo_description">Todo</label>
-            <input
-              type="text"
-              className="form-control"
-              id="todo_description"
-              required
-              value={currentEmployee.todo_description || ''}
-              onChange={handleInputChange}
-              name="todo_description"
-            />
-          </div>
+          
           <div className="form-group">
   <DepartmentDropdown   
               selectedDepartment={currentEmployee.departmentId}
@@ -143,7 +132,7 @@ const Employee = (props) => {
       ) : (
         <div>
           <br />
-          <p>Please click on a Employee...</p>
+          <p>Please create an Employee...</p>
         </div>
       )}
     </div>

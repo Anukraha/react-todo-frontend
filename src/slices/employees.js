@@ -5,8 +5,8 @@ const initialState = [];
 
 export const createEmployee = createAsyncThunk(
   "employees/create",
-  async ({ emp_name, mobile, address, todo_description, departmentId }) => {
-    const res = await EmployeeDataService.create({ emp_name, mobile, address, todo_description, departmentId });
+  async ({ emp_name, mobile, address, todo_description, departmentId, task_no }) => {
+    const res = await EmployeeDataService.create({ emp_name, mobile, address, todo_description, departmentId, task_no });
     return res.data;
   }
 );
